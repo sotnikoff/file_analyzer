@@ -3,31 +3,23 @@ require_relative './analyzed_file.rb'
 require_relative './printable_representation.rb'
 
 class DuplicateFilesReport
-  
-  def prepare_report
-    make_analyzed_files
+  def initialize(folder)
+    @files = Dir.glob("#{folder.sub(/\/$/, '')}/**/*")
+    make_report_items
     prepare_printable_respresentation
   end
 
   def print
-    @represented_files.each { |f| f.print }
-  end
-
-  def initialize(folder)
-    @files = Dir.glob("#{folder}/**/*")
+    @represented_files.each(&:print)
   end
 
   private
 
   def prepare_printable_respresentation
-    @represented_files = @analyzed_files.group_by { |cf| cf.md5 }.map do |k, v|
-      PrintableRepresentation.new(k, v) unless v.length.eql?(1)
-    end.compact
+    @represented_files = PrintableRepresentation.represented_items(@report_items)
   end
 
-  def make_analyzed_files
-    @analyzed_files = @files.map do |f|
-      AnalyzedFile.new(f, Digest::MD5.hexdigest(File.read(f))) unless File.directory?(f)
-    end.compact
+  def make_report_items
+    @report_items = AnalyzedFile.report_items(@files)
   end
 end

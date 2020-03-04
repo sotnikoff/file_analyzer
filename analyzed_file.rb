@@ -1,9 +1,18 @@
 class AnalyzedFile
-  attr_accessor :file
-  attr_accessor :md5
+  attr_reader :file
+  attr_reader :md5
 
-  def initialize(file, md5)
+  def initialize(file)
     @file = file
-    @md5 = md5
+  end
+
+  def actual
+    @md5 = Digest::MD5.hexdigest(File.read(@file)) unless File.directory?(@file)
+
+    return self unless @md5.nil?
+  end
+
+  def self.report_items(files)
+    files.map { |f| AnalyzedFile.new(f).actual }.compact
   end
 end

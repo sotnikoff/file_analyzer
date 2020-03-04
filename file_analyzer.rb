@@ -6,8 +6,5 @@ if ARGV.length != 1
   exit
 end
 
-folder = ARGV[0].sub(/\/$/, '')
-
-report = DuplicateFilesReport.new(folder)
-report.prepare_report
+report = DuplicateFilesReport.new(ARGV[0])
 report.print
