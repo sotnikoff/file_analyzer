@@ -9,4 +9,5 @@ end
 folder = ARGV[0].sub(/\/$/, '')
 
 report = DuplicateFilesReport.new(folder)
+report.prepare_report
 report.print
