@@ -1,20 +1,19 @@
 class PrintableRepresentation
-  def initialize(files_array)
-    @files_array = files_array
+  def initialize(files)
+    @files = files
   end
 
   def actual
-    return self unless @files_array.length.eql?(1)
+    return self unless @files.length.eql?(1)
   end
 
   def print
     puts '**************************'
     puts 'Same files:'
-    puts @files_array.map { |el| el.file }.join(', ')
+    puts @files.join(', ')
   end
 
   def self.represented_items(report_items)
-    report_items.group_by(&:md5)
-      .map { |_k, v| PrintableRepresentation.new(v).actual }.compact
+    report_items.map { |k, v| PrintableRepresentation.new(v) }
   end
 end
